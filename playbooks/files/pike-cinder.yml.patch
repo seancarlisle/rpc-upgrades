@@ -1,0 +1,11 @@
+--- pike-cinder.yml	2020-03-24 12:49:06.000000000 -0500
++++ pike-cinder-baremetal.yml	2020-03-24 12:50:04.000000000 -0500
+@@ -54,7 +54,7 @@
+ # Otherwise if cinder-volumes is already running in containers you may want to
+ # leave is_metal off, alternatively you will have to migrate your volumes once
+ # deployed on metal.
+-      is_metal: true
++      is_metal: false
+ 
+ 
+ physical_skel:

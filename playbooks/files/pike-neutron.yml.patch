@@ -1,0 +1,11 @@
+--- pike-neutron.yml	2020-03-24 12:43:15.000000000 -0500
++++ pike-neutron-baremetal.yml	2020-03-24 12:45:07.000000000 -0500
+@@ -63,6 +63,8 @@
+       - neutron_dhcp_agent
+       - neutron_lbaas_agent
+       - neutron_bgp_dragent
++    properties:
++      is_metal: true
+   neutron_server_container:
+     belongs_to:
+       - network_containers
