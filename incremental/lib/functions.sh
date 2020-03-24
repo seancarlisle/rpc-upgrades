@@ -277,6 +277,8 @@ function prepare_ocata {
 function prepare_pike {
   pushd /opt/rpc-upgrades/incremental/playbooks
     openstack-ansible configure-lxc-backend.yml
+    # Apply skel-specific patches
+    openstack-ansible pike-patch-skels.yml
   popd
 
   pushd /opt/openstack-ansible
