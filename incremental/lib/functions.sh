@@ -287,6 +287,11 @@ function prepare_pike {
     cp /opt/rpc-upgrades/playbooks/patches/pike/run-upgrade.patch /opt/openstack-ansible
     patch -p1 < run-upgrade.patch
   popd
+
+  # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
+  pushd /opt/rpc-upgrades/incremental/playbooks
+    openstack-ansible pike-run-upgrades-patch.yml
+  popd
 }
 
 function prepare_queens {
