@@ -18,8 +18,9 @@
   tasks:
     - name: Patch the Neutron skel file for baremetal agents
       patch:
-        src: "files/pike-patch-neutron.yml.patch"
+        src: "files/pike-neutron.yml.patch"
         dest: "/opt/openstack-ansible/playbooks/inventory/env.d/neutron.yml"
     - name: Patch the Cinder skel file for container volume hosts
-        src: "files/pike-patch-cinder.yml.patch"
+      patch:
+        src: "files/pike-cinder.yml.patch"
         dest: "/opt/openstack-ansible/playbooks/inventory/env.d/cinder.yml"
