@@ -1,5 +1,5 @@
 --- /tmp/queens-run-upgrade.sh	2020-03-30 15:11:24.000000000 -0500
-+++ /tmp/queens-run-upgrade-new.sh	2020-03-30 15:16:01.000000000 -0500
++++ /tmp/queens-run-upgrade-new.sh	2020-03-30 17:44:53.000000000 -0500
 @@ -177,7 +177,7 @@
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/pip-conf-removal.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/ceph-galaxy-removal.yml")
@@ -14,7 +14,7 @@
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/memcached-flush.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/neutron-tmp-inventory.yml")
 -        RUN_TASKS+=("setup-openstack.yml")
-+        RUN_TASKS+=("setup-openstack.yml" --limit '!nova_compute')
++        RUN_TASKS+=("setup-openstack.yml --limit '!nova_compute')
          # clean up the containers which are no longer required
          # now that the services are hyperconverged
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/cleanup-nova.yml -e force_containers_destroy=yes -e force_containers_data_destroy=yes")
