@@ -19,4 +19,4 @@
     - name: Patch the Cinder skel file for container volume hosts
       patch:
         src: "files/queens-cinder.yml.patch"
-        dest: "/opt/openstack-ansible/playbooks/inventory/env.d/cinder.yml"
+        dest: "/opt/openstack-ansible/inventory/env.d/cinder.yml"
