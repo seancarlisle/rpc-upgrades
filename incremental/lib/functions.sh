@@ -303,6 +303,9 @@ function prepare_queens {
 
     # Apply cinder skel modification
     openstack-ansible queens-patch-skels.yml
+
+    # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
+    openstack-ansible queens-run-upgrades-patch.yml
   popd
 }
 
