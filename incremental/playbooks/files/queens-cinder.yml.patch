@@ -1,0 +1,11 @@
+--- /tmp/cinder-queens.yml	2020-03-30 13:43:44.000000000 -0500
++++ /tmp/cinder-queens-baremetal.yml	2020-03-30 13:44:13.000000000 -0500
+@@ -48,7 +48,7 @@
+ # Otherwise if cinder-volumes is already running in containers you may want to
+ # leave is_metal off, alternatively you will have to migrate your volumes once
+ # deployed on metal.
+-      is_metal: true
++      is_metal: false
+ 
+ 
+ physical_skel:
