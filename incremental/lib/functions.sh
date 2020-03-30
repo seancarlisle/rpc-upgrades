@@ -300,6 +300,9 @@ function prepare_queens {
     if [[ ! -f "${UPGRADES_WORKING_DIR}/queens_upgrade_prep.complete" ]]; then
       openstack-ansible prepare-queens-upgrade.yml
     fi
+
+    # Apply cinder skel modification
+    openstack-ansible queens-patch-skels.yml
   popd
 }
 
