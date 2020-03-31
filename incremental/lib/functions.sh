@@ -315,6 +315,9 @@ function prepare_rocky {
     if [[ ! -f "${UPGRADES_WORKING_DIR}/rocky_upgrade_prep.complete" ]]; then
       openstack-ansible prepare-rocky-upgrade.yml
     fi
+
+    # Apply patch for Cinder skel file for cinder_volume on baremetal
+    openstack-ansible rocky-patch-skels.yml
   popd
 }
 
