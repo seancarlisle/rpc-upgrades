@@ -318,6 +318,9 @@ function prepare_rocky {
 
     # Apply patch for Cinder skel file for cinder_volume on baremetal
     openstack-ansible rocky-patch-skels.yml
+
+    # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
+    openstack-ansible rocky-run-upgrades-patch.yml
   popd
 }
 
