@@ -270,7 +270,7 @@ function prepare_ocata {
     # Apply skel changes
     openstack-ansible ocata-patch-skels.yml
 
-    # Push skel changes to /etc/openstack_deploy/env.d
+    # Push skel changes to /etc/openstack_deploy/env.d to prevent inventory overwrites
     rsync -ruv /opt/openstack-ansible/playbooks/inventory/env.d /etc/openstack_deploy
  
     if [[ ! -f "/etc/openstack_deploy/ocata_upgrade_prep.complete" ]]; then
@@ -289,6 +289,9 @@ function prepare_pike {
     openstack-ansible configure-lxc-backend.yml
     # Apply skel-specific patches
     openstack-ansible pike-patch-skels.yml
+
+    # Push the pike env.d to /etc/openstack_deploy to prevent inventory overwrites
+    rsync -ruv /opt/openstack-ansible/playbooks/inventory/env.d /etc/openstack_deploy/
   popd
 
   pushd /opt/openstack-ansible
@@ -314,6 +317,9 @@ function prepare_queens {
     # Apply cinder skel modification
     openstack-ansible queens-patch-skels.yml
 
+    # Push the queens env.d to /etc/openstack_deploy to prevent inventory overwrites
+    rsync -ruv /opt/openstack-ansible/inventory/env.d /etc/openstack_deploy/
+
     # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
     openstack-ansible queens-run-upgrades-patch.yml
   popd
@@ -328,6 +334,9 @@ function prepare_rocky {
 
     # Apply patch for Cinder skel file for cinder_volume on baremetal
     openstack-ansible rocky-patch-skels.yml
+
+    # Push the rocky env.d to /etc/openstack_deploy to prevent inventory overwrites
+    rsync -ruv /opt/openstack-ansible/inventory/env.d /etc/openstack_deploy/
 
     # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
     openstack-ansible rocky-run-upgrades-patch.yml
