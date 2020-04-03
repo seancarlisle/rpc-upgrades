@@ -1,0 +1,10 @@
+--- /tmp/ocata-neutron.yml	2020-04-03 09:13:47.000000000 -0500
++++ /tmp/ocata-neutron-baremetal.yml	2020-04-03 09:14:15.000000000 -0500
+@@ -65,6 +65,7 @@
+       - neutron_bgp_dragent
+     properties:
+       service_name: neutron
++      is_metal: true
+   neutron_server_container:
+     belongs_to:
+       - network_containers

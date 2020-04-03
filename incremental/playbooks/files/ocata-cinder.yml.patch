@@ -1,0 +1,11 @@
+--- /tmp/ocata-cinder.yml	2020-04-03 09:11:39.000000000 -0500
++++ /tmp/ocata-cinder-baremetal.yml	2020-04-03 09:12:11.000000000 -0500
+@@ -56,7 +56,7 @@
+ # Otherwise if cinder-volumes is already running in containers you may want to
+ # leave is_metal off, alternatively you will have to migrate your volumes once
+ # deployed on metal.
+-      is_metal: true
++      is_metal: false
+       service_name: cinder
+ 
+ 
