@@ -263,6 +263,12 @@ function prepare_ocata {
   pushd /opt/rpc-upgrades/incremental/playbooks
     openstack-ansible configure-lxc-backend.yml
 
+    # Apply skel changes
+    openstack-ansible ocata-patch-skels.yml
+
+    # Push skel changes to /etc/openstack_deploy/env.d
+    rsync -ruv /opt/openstack-ansible/playbooks/inventory/env.d /etc/openstack_deploy
+ 
     if [[ ! -f "/etc/openstack_deploy/ocata_upgrade_prep.complete" ]]; then
       openstack-ansible prepare-ocata-upgrade.yml
     fi
