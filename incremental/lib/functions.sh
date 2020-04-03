@@ -192,6 +192,10 @@ function configure_rpc_openstack {
   pushd /opt/rpc-openstack/playbooks
     /opt/rpc-ansible/bin/ansible-playbook -i 'localhost,' site-release.yml
   popd
+  # clean out any existing env.d inventory
+  if [ -d "/etc/openstack_deploy/env.d" ]; then
+    rm -rf /etc/openstack_deploy/env.d
+  fi
 }
 
 function install_ansible_source {
