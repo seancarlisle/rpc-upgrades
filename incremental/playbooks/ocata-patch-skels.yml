@@ -19,8 +19,8 @@
     - name: Patch the Neutron skel file for baremetal agents
       patch:
         src: "files/ocata-neutron.yml.patch"
-        dest: "/opt/openstack-ansible/playbooks/inventory/env.d/neutron.yml"
+        dest: "/opt/rpc-openstack/openstack-ansible/playbooks/inventory/env.d/neutron.yml"
     - name: Patch the Cinder skel file for container volume hosts
       patch:
         src: "files/ocata-cinder.yml.patch"
-        dest: "/opt/openstack-ansible/playbooks/inventory/env.d/cinder.yml"
+        dest: "/opt/rpc-openstack/openstack-ansible/playbooks/inventory/env.d/cinder.yml"

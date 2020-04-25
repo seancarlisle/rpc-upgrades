@@ -267,7 +267,7 @@ function prepare_ocata {
     openstack-ansible ocata-patch-skels.yml
 
     # Push skel changes to /etc/openstack_deploy/env.d to prevent inventory overwrites
-    rsync -ruv /opt/openstack-ansible/playbooks/inventory/env.d /etc/openstack_deploy
+    rsync -ruv /opt/rpc-openstack/openstack-ansible/playbooks/inventory/env.d /etc/openstack_deploy
  
     if [[ ! -f "/etc/openstack_deploy/ocata_upgrade_prep.complete" ]]; then
       openstack-ansible prepare-ocata-upgrade.yml
