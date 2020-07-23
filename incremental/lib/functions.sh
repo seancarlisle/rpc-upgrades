@@ -15,8 +15,21 @@
 # limitations under the License.
 
 # functions for incremental upgrades
+function ensure_working_dir {
+   if [ ! -d "${UPGRADES_WORKING_DIR}" ]; then
+     mkdir -p ${UPGRADES_WORKING_DIR}
+   fi
+
+   if [ -n "${RPC_PRODUCT_RELEASE}" ]; then
+     if [ ! -d  "/etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}" ]; then
+       mkdir -p "/etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}"
+     fi
+   fi
+ }
 
 function discover_code_version {
+  ensure_working_dir
+
   if [[ ! -f "/etc/openstack-release" ]]; then
     failure "No release file could be found, failing..."
     exit 99
@@ -75,12 +88,6 @@ function require_ubuntu_version {
   fi
 }
 
-function ensure_working_dir {
-  if [ ! -d "${UPGRADES_WORKING_DIR}" ]; then
-    mkdir -p ${UPGRADES_WORKING_DIR}
-  fi
-}
-
 function pre_flight {
     ## Pre-flight Check ----------------------------------------------------------
     # Clear the screen and make sure the user understands whats happening.
@@ -128,6 +135,8 @@ function check_user_variables {
        echo "default_bind_mount_logs: False" >> /etc/openstack_deploy/user_variables.yml
      fi
   fi
+
+
 }
 
 function checkout_rpc_openstack {
@@ -161,6 +170,8 @@ function checkout_openstack_ansible {
 }
 
 function ensure_osa_bootstrap {
+  ensure_working_dir
+
   if [ ! -f "/etc/openstack_deploy/osa_bootstrapped.complete" ]; then
     # purge osa and wrapper so that we start fresh without RPC-O settings
     if [ -d "/opt/openstack-ansible" ]; then
@@ -177,15 +188,20 @@ function ensure_osa_bootstrap {
   touch /etc/openstack_deploy/osa_bootstrapped.complete
   # ensure we don't rerun bootstrap-ansible in run-upgrade script
   # by telling it to skip bootstrap
-  if [ ! -d  "/etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}" ]; then
-    mkdir -p "/etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}"
-  fi
   touch /etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}/bootstrap-ansible.complete
 }
 
 
 function configure_rpc_openstack {
-  rsync -av --delete /opt/rpc-openstack/etc/openstack_deploy/group_vars /etc/openstack_deploy/
+  ensure_working_dir
+
+  if [ ! -f "/etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}/rpco-group-vars-sync.complete" ]; then
+    rsync -av --delete /opt/rpc-openstack/etc/openstack_deploy/group_vars /etc/openstack_deploy/
+    touch "/etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}/rpco-group-vars-sync.complete"
+    echo "NOTE: RPC-Openstack default group_vars got synchronized one-time to allow for edits during upgrades"
+    echo "Remove /etc/openstack_deploy/upgrade-${RPC_PRODUCT_RELEASE}/rpco-group-vars-sync.complete if you want"
+    echo "to resynchronize the group_vars again"
+  fi
   rm -rf /opt/rpc-ansible
   virtualenv /opt/rpc-ansible
   install_ansible_source
@@ -216,6 +232,8 @@ function check_rpc_config {
 }
 
 function repo_rebuild {
+    ensure_working_dir
+
     # Destroy repo container prior to the upgrade to reduce "No space left on device" issues
     if [[ ! -f "${UPGRADES_WORKING_DIR}/repo-container-rebuild.complete" ]]; then
       pushd /opt/openstack-ansible/playbooks
@@ -252,10 +270,11 @@ function run_upgrade {
   popd
 }
 
-function generate_upgrade_config {
-  # generate user_rpco_upgrade.yml
+function prepare_config_for_upgrade {
+  # generate user_rpco_upgrade.yml and configure
+  # required variables
   pushd /opt/rpc-upgrades/incremental/playbooks
-    openstack-ansible rpco-upgrade-configs.yml
+    openstack-ansible rpco-upgrade-configs.yml variable-migrations.yml
   popd
 }
 
@@ -304,6 +323,8 @@ function prepare_pike {
 }
 
 function prepare_queens {
+  ensure_working_dir
+
   pushd /opt/rpc-upgrades/incremental/playbooks
     openstack-ansible configure-lxc-backend.yml
     if [[ ! -f "${UPGRADES_WORKING_DIR}/queens_upgrade_prep.complete" ]]; then
@@ -322,6 +343,8 @@ function prepare_queens {
 }
 
 function prepare_rocky {
+  ensure_working_dir
+
   pushd /opt/rpc-upgrades/incremental/playbooks
     openstack-ansible configure-lxc-backend.yml
     if [[ ! -f "${UPGRADES_WORKING_DIR}/rocky_upgrade_prep.complete" ]]; then
@@ -354,6 +377,8 @@ function cleanup {
 }
 
 function mark_started {
+  ensure_working_dir
+
   echo "Starting ${RPC_PRODUCT_RELEASE^} upgrade..."
   ensure_working_dir
   if [ ! -f ${UPGRADES_WORKING_DIR}/upgrade-to-${RPC_PRODUCT_RELEASE}.started ]; then
@@ -363,6 +388,8 @@ function mark_started {
 }
 
 function mark_completed {
+  ensure_working_dir
+
   echo "Completing ${RPC_PRODUCT_RELEASE^} upgrade..."
   # copy current openstack-release to openstack-release.upgrade to signify next starting point
   cp /etc/openstack-release ${UPGRADES_WORKING_DIR}/openstack-release.upgrade
