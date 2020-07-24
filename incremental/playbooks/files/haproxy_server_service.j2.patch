@@ -1,0 +1,21 @@
+--- a/templates/service.j2
++++ b/templates/service.j2
+@@ -31,6 +31,7 @@
+ {% if item.service.haproxy_redirect_http_port is defined and item.service.haproxy_ssl %}
+ {% if (loop.index == 1 or item.service.haproxy_ssl_all_vips | default(false) | bool) %}
+
++
+ frontend {{ item.service.haproxy_service_name }}-redirect-front-{{ loop.index }}
+ bind {{ vip_bind }}:{{ item.service.haproxy_redirect_http_port }}
+     mode http
+@@ -64,7 +65,9 @@ frontend {{ item.service.haproxy_service_name }}-front-{{ loop.index }}
+ {% endif %}
+ {% if (item.service.haproxy_ssl | default(false) | bool) and request_option == 'http' and (loop.index == 1 or item.service.haproxy_ssl_all_vips | default(false) | bool) %}
+     reqadd X-Forwarded-Proto:\ https
+-{% endif %}
++{% elif (item.service.haproxy_ssl | default(false) | bool) and (item.service.haproxy_backend_ssl | default(false) | bool) and request_option == 'http' and (loop.index > 1 and not item.service.haproxy_ssl_all_vips | default(false) | bool) %}
++    reqadd X-Forwarded-Proto:\ http
++ {% endif %}
+     mode {{ item.service.haproxy_balance_type }}
+     default_backend {{ item.service.haproxy_service_name }}-back
+ {% endfor %}
