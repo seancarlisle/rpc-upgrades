@@ -1,6 +1,16 @@
---- /tmp/queens-run-upgrade.sh	2020-03-30 15:11:24.000000000 -0500
-+++ /tmp/queens-run-upgrade-new.sh	2020-03-30 18:09:10.000000000 -0500
-@@ -177,7 +177,7 @@
+--- scripts/run-upgrade.sh	2020-07-27 15:11:10.000000000 -0500
++++ /tmp/queens-run-upgrade.sh	2020-07-27 15:12:56.000000000 -0500
+@@ -164,7 +164,8 @@
+     # Archive previous version artifacts
+     tar zcf /openstack/previous-ansible_`date +%F_%H%M`.tar.gz /etc/openstack_deploy /etc/ansible/ /usr/local/bin/openstack-ansible.rc
+
+-    "${SCRIPTS_PATH}/bootstrap-ansible.sh"
++    # Already handled by the rpc-upgrades script.
++    #"${SCRIPTS_PATH}/bootstrap-ansible.sh"
+
+     pushd ${MAIN_PATH}/playbooks
+         # create a symlink to haproxy-install so that we can run a second time at end
+@@ -177,7 +178,7 @@
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/pip-conf-removal.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/ceph-galaxy-removal.yml")
          # we don't want to trigger container restarts for these groups yet
@@ -9,7 +19,7 @@
          # add new container config to containers but don't restart
          RUN_TASKS+=("lxc-containers-create.yml -e 'lxc_container_allow_restarts=false' --limit 'galera_all:neutron_agent:rabbitmq_all'")
          # setup infra
-@@ -199,7 +199,7 @@
+@@ -199,7 +200,7 @@
          RUN_TASKS+=("rsyslog-install.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/memcached-flush.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/neutron-tmp-inventory.yml")
