@@ -307,6 +307,9 @@ function prepare_pike {
 
     # Push the pike env.d to /etc/openstack_deploy to prevent inventory overwrites
     rsync -ruv /opt/openstack-ansible/playbooks/inventory/env.d /etc/openstack_deploy/
+  
+    # Apply patch for haproxy customization (Keystone public haproxy encryption and private haproxy passthrough)
+    openstack-ansible apply_haproxy_patch.yml
   popd
 
   pushd /opt/openstack-ansible
@@ -339,6 +342,9 @@ function prepare_queens {
 
     # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
     openstack-ansible queens-run-upgrades-patch.yml
+
+    # Apply patch for haproxy customization (Keystone public haproxy encryption and private haproxy passthrough)
+    openstack-ansible apply_haproxy_patch.yml
   popd
 }
 
@@ -359,6 +365,9 @@ function prepare_rocky {
 
     # Apply patch for only deploying on Controllers (Computes will be executed manually once script completes)
     openstack-ansible rocky-run-upgrades-patch.yml
+
+    # Apply patch for haproxy customization (Keystone public haproxy encryption and private haproxy passthrough)
+    openstack-ansible apply_haproxy_patch.yml
   popd
 }
 
