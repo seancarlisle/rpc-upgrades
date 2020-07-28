@@ -1,6 +1,16 @@
---- /tmp/rocky-run-upgrade.sh	2020-03-31 09:48:44.000000000 -0500
-+++ /tmp/rocky-run-upgrade-new.sh	2020-03-31 09:49:52.000000000 -0500
-@@ -186,7 +186,7 @@
+--- /tmp/rocky-run-upgrade.sh	2020-07-28 14:11:55.000000000 -0500
++++ /tmp/rocky-run-upgrade-new.sh	2020-07-28 14:13:41.000000000 -0500
+@@ -176,7 +176,8 @@
+     # Archive previous version artifacts
+     tar zcf /openstack/previous-ansible_`date +%F_%H%M`.tar.gz /etc/openstack_deploy /etc/ansible/ /usr/local/bin/openstack-ansible.rc
+ 
+-    bootstrap_ansible
++    # Already handled by the rpc-upgrade scripts
++    # bootstrap_ansible
+ 
+     pushd ${MAIN_PATH}/playbooks
+         RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/ansible_fact_cleanup.yml")
+@@ -186,7 +187,7 @@
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/ceph-galaxy-removal.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/molteniron-role-removal.yml")
          # we don't want to trigger container restarts for these groups yet
@@ -9,7 +19,7 @@
          # add new container config to containers but don't restart
          RUN_TASKS+=("lxc-containers-create.yml -e 'lxc_container_allow_restarts=false' --limit 'galera_all:rabbitmq_all'")
          # setup infra
-@@ -205,7 +205,7 @@
+@@ -205,7 +206,7 @@
          RUN_TASKS+=("utility-install.yml")
          RUN_TASKS+=("rsyslog-install.yml")
          RUN_TASKS+=("${UPGRADE_PLAYBOOKS}/memcached-flush.yml")
